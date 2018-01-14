@@ -2,8 +2,8 @@
 Weibo (a Microblog site popular in China) User Sentimental Influence Analysis Results
 
 + Results site:
-1. [https://jeness.github.io/WeiboRankEngVer/Collab/](https://jeness.github.io/WeiboRankEngVer/Collab/ "Collab Image")
-2. [https://jeness.github.io/WeiboRankEngVer/ranklist/](https://jeness.github.io/WeiboRankEngVer/ranklist/ "User Ranklist")
+1. [Collab Image](https://jeness.github.io/WeiboRankEngVer/CollabEngVer/)
+2. [User Ranklist](https://jeness.github.io/WeiboRankEngVer/ranklistEngVer/)
 + Analysis text contents of Weibo and extract sentimental infomation with Python.
 + Define the weight of the followed and following link relationship with Python. 
 + Classify and rank sentimental influence of Weibo users among the SNS using PageRank iteration process.
