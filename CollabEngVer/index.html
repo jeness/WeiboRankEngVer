@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html class="ocks-org do-not-copy">
+<meta charset="utf-8">
+<title>WeiboRank</title>
+<body>
+<style>
+
+@import url(style.css);
+
+#circle circle {
+  fill: none;
+  pointer-events: all;
+}
+
+.group path {
+  fill-opacity: .5;
+}
+
+path.chord {
+  stroke: #000;
+  stroke-width: .25px;
+}
+
+#circle:hover path.fade {
+  display: none;
+}
+
+</style>
+
+<header>
+    <p>Go to<a href="../ranklistEngVer">Weibo User Semtiment Influence Ranklist</a></p>
+</header>
+
+<h3>Weibo User Semtiment Influence Relationship Under Topics</h3>
+
+<script src="js/jquery-1.12.3.min.js" type="text/javascript"></script>
+<script src="d3.v3.min.js" charset="utf-8"></script>
+<script src="queue.v1.min.js"></script>
+
+<script>
+  var layout;
+  var svg;
+  var arc;
+  var radialHeight = 24;
+  var path;
+  var drawnOne = false;
+
+  function redraw() {
+      var topic = jQuery("#topic").val();
+      var senti= jQuery("#senti").val();
+    console.log(topic);
+    console.log(senti);
+    var width = 720,
+            height = 720,
+            outerRadius = Math.min(width, height) / 2 - 10,
+            innerRadius = outerRadius - radialHeight;
+
+
+    arc = d3.svg.arc()
+            .innerRadius(innerRadius)
+            .outerRadius(outerRadius);
+
+    layout = d3.layout.chord()
+            .padding(.04)
+            .sortSubgroups(d3.descending)
+            .sortChords(d3.ascending);
+
+    path = d3.svg.chord()
+            .radius(innerRadius);
+
+    svg = d3.select("body").select("table").select("td").select("div").append("svg")
+            .attr("width", width)
+            .attr("height", height)
+            .append("g")
+            .attr("id", "circle")
+            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+    svg.append("circle")
+            .attr("r", outerRadius);
+
+    queue()
+            .defer(d3.csv, "graphs/"+topic+senti+"CLR.csv")
+            .defer(d3.json, "graphs/"+topic+senti+"matrix.json")
+            .await(ready);
+  }
+
+function ready(error, users, matrix) {
+  if (error) throw error;
+  if (drawnOne){
+      d3.select("svg").remove();
+  }
+  // Compute the chord layout.
+  layout.matrix(matrix);
+
+  // Add a group per neighborhood.
+  var group = svg.selectAll(".group")
+      .data(layout.groups)
+    .enter().append("g")
+      .attr("class", "group")
+      .on("mouseover", mouseover);
+
+  // Add a mouseover title.
+  group.append("title").text(function(d, i) {
+    return users[i].name + "'s influence to followers is: " + d.value;
+  });
+
+  // Add the group arc.
+  var groupPath = group.append("path")
+      .attr("id", function(d, i) { return "group" + i; })
+      .attr("d", arc)
+      .style("fill", function(d, i) { return users[i].color; });
+
+  // Add a text label.
+  var groupText = group.append("text")
+      .attr("x", 6)
+      .attr("dy", 15);
+
+  groupText.append("textPath")
+      .attr("xlink:href", function(d, i) { return "#group" + i; })
+//      .text(function(d, i) { return users[i].name; }); //username is not completed shown
+
+  // Remove the labels that don't fit. :(
+  groupText.filter(function(d, i) { return groupPath[0][i].getTotalLength() / 2 - 16 < this.getComputedTextLength(); })
+      .remove();
+
+  // Add the chords.
+  var chord = svg.selectAll(".chord")
+      .data(layout.chords)
+    .enter().append("path")
+      .attr("class", "chord")
+      .style("fill", function(d) { return users[d.source.index].color; })
+      .attr("d", path);
+
+  // Add an elaborate mouseover title for each chord.
+  chord.append("title").text(function(d) {
+    return users[d.source.index].name
+        + " → " + users[d.target.index].name
+        + ": " + d.source.value
+        + "\n" + users[d.target.index].name
+        + " → " + users[d.source.index].name
+        + ": " + d.target.value;
+  });
+
+  function mouseover(d, i) {
+    chord.classed("fade", function(p) {
+      return p.source.index != i
+          && p.target.index != i;
+    });
+  }
+    drawnOne = true;
+}
+window.onload=redraw;
+</script>
+
+
+
+
+<div class="col-sm-12 col-md-12 col-lg-12">
+<div class="table">
+  <table class="table-sm">
+    <tr>
+      <td>
+	<div class="col-sm-6 col-md-6 col-lg-6">
+	</div>
+      </td>
+      <td>
+	&nbsp;
+	&nbsp;
+	&nbsp;
+	&nbsp;
+	&nbsp;
+	&nbsp;
+      </td>
+      <td valign="center">
+	<div class="col-sm-6 col-md-6 col-lg-6">
+      <select id="topic" name="topic" onChange="redraw()">
+                <option value="PR1">topic 1-魅族</option>
+                <option value="PR2">topic 2-小米</option>
+                <option selected value="PR3">topic 3-火箭队</option>
+                <option value="PR4">topic 4-林书豪</option>
+                <option value="PR5">topic 5-恒大</option>
+                <option value="PR6">topic 6-韩剧</option>
+                <option value="PR7">topic 7-雾霾</option>
+                <option value="PR8">topic 8-房价</option>
+                <option value="PR9">topic 9-同桌的你</option>
+                <option value="PR10">topic 10-公务员</option>
+                <option value="PR11">topic 11-贪官</option>
+                <option value="PR12">topic 12-转基因</option>
+      </select>
+
+      <select id="senti" name="senti" onChange="redraw()">
+                <option value="Pos">Positive Sentiment Influence</option>
+                <option value="Neg">Negative Sentiment Influence</option>
+                <option selected value="Neut">Neutral Sentiment Influence</option>
+      </select>
+  <br />
+  <br />
+  <p>
+    This Chord image shows the followed and following relationship among Weibo users on 12 selected topics considering sentiment information in text contents as link weights.
+  </p>
+  <p>
+    These 12 topics respectively are "魅族"，"小米"，"火箭队"，"林书豪"，"恒大"，"韩剧"，"雾霾"，"房价"，"同桌的你"，"公务员"，"贪官"，"转基因".
+  </p>
+  <p>
+    In the chord image, the arc between two users means those two is followed or following the other. The thickness of the link means the strength of the user sentiment influence under the specific topic.
+    The computation of user sentiment influence is used PageRank to iterate. The influence value in the chord image is the result of lg(abstract value) to show the different orders of magnitude.
+  </p>
+  <p>
+    The followed and following relationship among users is directed, so arcs in the chord are directed too.
+    The sentiment influence shown in directed arcs means the sentimental influence from Weibo users to their followers within Weibo text contexts post by Weibo users.
+  </p>
+  </div>
+      </td>
+  </tr>
+</table>
+</div>
+</div>
+</body>
+</html>
+
