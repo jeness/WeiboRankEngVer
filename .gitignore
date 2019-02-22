@@ -99,6 +99,6 @@ venv.bak/
 
 # mkdocs documentation
 /site
-
+/lstm/test.ipynb
 # mypy
 .mypy_cache/

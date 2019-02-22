@@ -15,8 +15,8 @@ Use Recurrent Neural Network(RNN)/LSTM (tutorial: [keras](https://keras.io/model
 ### Steps:
 1. get data and input data into matrix
 2. Use [jieba](https://github.com/fxsjy/jieba) to cut the Chinese sentence into words
-3. Word2Vec model set up and training
-4. Get the three types of sentiments: positive, negative and neutral.<br>
+3. Word2Vec model set up, training, testing, fine-tune, training, testing, fine-tune...... until -> :)
+4. Get the three types of sentiments: positive, negative and neutral of these sentences.<br>
 
 ### Network Structure
 ![network structure](https://github.com/jeness/WeiboRankEngVer/raw/master/pictures/network%20structure.png)
