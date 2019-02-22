@@ -20,3 +20,17 @@ Use Recurrent Neural Network(RNN)/LSTM (tutorial: [keras](https://keras.io/model
 
 ### Network Structure
 ![network structure](https://github.com/jeness/WeiboRankEngVer/raw/master/pictures/network%20structure.png)
+
+
+### A subdomain/second-level domain for project github pages
+
+Final target is:
+Second-level domain: `https://jeness.github.io/WeiboRankEngVer/CollabEngVer/` -> `weiborankengver.haoranyu.info/CollabEngVer`
+main page domain: 'jeness.github.io' -> `www.haoranyu.info`
+
+Step 1: In gh-pages branch in WeiboRankEngVer repo, add CNAME file, add `weiborankengver.haoranyu.info` in the CNAME file.
+
+Step 2: add a new CNAME in godday 
+![cname](https://github.com/jeness/jeness.github.io/raw/development/imageForReadme/CNAME%20in%20godday.png)
+
+> http://zangbo.me/2017/06/12/GithubPageDomainName/
